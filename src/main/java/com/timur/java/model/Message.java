@@ -1,7 +1,10 @@
 package com.timur.java.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by timur_000 on 13.12.2016.
@@ -12,6 +15,16 @@ public class Message {
     private Date created;
     private String author;
     private String text;
+    private Map<Long,Comment> comments=new HashMap<>();;
+
+    @XmlTransient
+    public Map<Long, Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Map<Long, Comment> comments) {
+        this.comments = comments;
+    }
 
     public long getId() {
         return id;
@@ -54,5 +67,6 @@ public class Message {
         this.created = new Date();
         this.author = author;
         this.text = text;
+
     }
 }

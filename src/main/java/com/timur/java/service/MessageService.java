@@ -1,9 +1,11 @@
 package com.timur.java.service;
 
 import com.timur.java.database.DataBase;
+import com.timur.java.exception.NotFoundException;
 import com.timur.java.model.Message;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +25,11 @@ public class MessageService {
     }
 
     public Message getMessage(long id){
-        return messages.get(id);
+        Message message=messages.get(id);
+        if(message==null){
+            throw new NotFoundException("Message:"+id+" not found");
+        }
+        return message;
     }
     public Message updateMessage(Message message){
         if(message.getId()<=0){
@@ -38,6 +44,25 @@ public class MessageService {
         messages.put(message.getId(),message);
         return message;
     }
+
+    public List<Message>getAllMessagesForYear(int year){
+        ArrayList<Message>messages=new ArrayList<>();
+        Calendar c=Calendar.getInstance();
+        for(Message m: this.getAllMessages()){
+            c.setTime(m.getCreated());
+            if(c.get(Calendar.YEAR)==year){
+                messages.add(m);
+            }
+        }
+        return messages;
+    }
+    public List<Message>getAllMessagesPagination(int start,int size){
+        if((start+size)>messages.size()){
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(messages.values()).subList(start, size+start);
+    }
+
     public Message removeMessage(long id){
         return messages.remove(id);
     }
