@@ -34,8 +34,25 @@ public class MessageResource {
 
     @GET
     @Path("/{messageId}")
-    public Message getMessage(@PathParam("messageId") long id) {
-     return messageService.getMessage(id);
+    public Message getMessage(@PathParam("messageId") long id,@Context UriInfo uriInfo) {
+        Message message= messageService.getMessage(id);
+        message.addLink(getUri(uriInfo, message),"self");
+        message.addLink(getUriAuthor(uriInfo, message),"author");
+        message.addLink(getUriComments(uriInfo, message),"comments");
+
+        return message;
+    }
+
+    private String getUriComments(UriInfo uriInfo, Message message) {
+        return uriInfo.getBaseUriBuilder().path(MessageResource.class).path(MessageResource.class,"getComment").path(CommentResources.class).resolveTemplate("messageId",message.getId()).build().toString();
+    }
+
+    private String getUriAuthor(UriInfo uriInfo, Message message) {
+        return uriInfo.getBaseUriBuilder().path(ProfileResource.class).path(message.getAuthor()).build().toString();
+    }
+
+    private String getUri(UriInfo uriInfo, Message message) {
+        return uriInfo.getBaseUriBuilder().path(MessageResource.class).path(Long.toString(message.getId())).build().toString();
     }
 
     @POST

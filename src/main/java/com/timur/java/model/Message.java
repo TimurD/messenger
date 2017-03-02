@@ -1,10 +1,10 @@
 package com.timur.java.model;
 
+import com.timur.java.exception.Link;
+
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by timur_000 on 13.12.2016.
@@ -15,7 +15,23 @@ public class Message {
     private Date created;
     private String author;
     private String text;
-    private Map<Long,Comment> comments=new HashMap<>();;
+    private Map<Long,Comment> comments=new HashMap<>();
+    private List<Link> links=new ArrayList<>();
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
+
+    public void addLink(String link,String rel){
+        Link link1 =new Link();
+        link1.setLink(link);
+        link1.setRel(rel);
+        links.add(link1);
+    }
 
     @XmlTransient
     public Map<Long, Comment> getComments() {
